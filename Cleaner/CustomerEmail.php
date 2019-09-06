@@ -81,19 +81,33 @@ class CustomerEmail implements CleanerInterface
         );
 
         $counter = 1;
+        $failedCustomerIds = [];
         foreach ($customerCollectionIds as $customerId) {
             $customer = $this->_customerRepository->getById($customerId);
 
-            $this->_updateCustomerEmail($customer);
-            $this->_outputMessage(
-                $counter . '/' . $customerCollectionIdsCount
-            );
+            try {
+                $this->_updateCustomerEmail($customer);
+                $this->_outputMessage(
+                    $counter . '/' . $customerCollectionIdsCount
+                );
+            } catch (\Exception $e) {
+                $failedCustomerIds[] = $customerId;
+            }
             $counter++;
         }
 
+        $successfullCustomersEmailsChanged = $customerCollectionIdsCount - count($failedCustomerIds);
         $this->_outputMessage(
-            __('Changed ' . $customerCollectionIdsCount . ' customer emails.')
+            __('Changed ' . $successfullCustomersEmailsChanged . ' customer emails.')
         );
+        if (!empty($failedCustomerIds)) {
+            $this->_outputMessage(
+                __('Was not able to change emails for these customer ids:')
+            );
+            $this->_outputMessage(
+                implode(',', $failedCustomerIds)
+            );
+        }
     }
 
     /**

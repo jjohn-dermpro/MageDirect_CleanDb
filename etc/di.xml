@@ -13,7 +13,6 @@
         <arguments>
             <argument name="cleaners" xsi:type="array">
                 <item name="customer_email" xsi:type="object">MageDirect\CleanDb\Cleaner\CustomerEmail</item>
-                <item name="order" xsi:type="object">MageDirect\CleanDb\Cleaner\Order</item>
             </argument>
         </arguments>
     </type>
